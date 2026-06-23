@@ -1,0 +1,92 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Operational Insights{% endblock %}
+
+{% block content %}
+<div class="stats-grid animate-fade">
+    <div class="glass-card stat-card">
+        <p class="text-muted mb-1">Total Employees</p>
+        <h2 class="mb-0">{{ employees_count }}</h2>
+        <small class="text-success"><i class="fas fa-arrow-up"></i> 12% vs last month</small>
+    </div>
+    <div class="glass-card stat-card">
+        <p class="text-muted mb-1">Pending Leaves</p>
+        <h2 class="mb-0">8</h2>
+        <small class="text-warning">Action required</small>
+    </div>
+    <div class="glass-card stat-card">
+        <p class="text-muted mb-1">Risk Assessments</p>
+        <h2 class="mb-0">{{ predictions.count }}</h2>
+        <small class="text-muted">Generated today</small>
+    </div>
+</div>
+
+<div class="row animate-fade" style="animation-delay: 0.1s;">
+    <div class="col-lg-8 mb-4">
+        <div class="glass-card p-4 h-100">
+            <h4 class="mb-4">Recent Risk Predictions</h4>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Prediction Date</th>
+                            <th>Risk Score</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pred in predictions %}
+                        <tr>
+                            <td>UID-{{ pred.id|add:100 }}</td>
+                            <td>{{ pred.prediction_date|date:"M d, Y H:i" }}</td>
+                            <td>{{ pred.risk_score|floatformat:2 }}</td>
+                            <td>
+                                <span class="risk-badge {% if pred.risk_score > 0.5 %}risk-high{% else %}risk-low{% endif %}">
+                                    {% if pred.risk_score > 0.5 %}High Risk{% else %}Low Risk{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4">No predictions made yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <div class="glass-card p-4 h-100">
+            <h4 class="mb-4">Model Distribution</h4>
+            <canvas id="riskChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('riskChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [{
+                data: {{ chart_data|safe }},
+                backgroundColor: ['#22c55e', '#ef4444'],
+                borderWidth: 0,
+                spacing: 10
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#94a3b8', font: { size: 12 } }
+                }
+            },
+            cutout: '70%'
+        }
+    });
+</script>
+{% endblock %}

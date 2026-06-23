@@ -1,0 +1,60 @@
+{% extends 'portal/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Resignation Risk Analyser{% endblock %}
+
+{% block content %}
+<div class="row animate-fade">
+    <div class="col-lg-6 mb-4">
+        <div class="glass-card p-4">
+            <h4 class="mb-2"><i class="fas fa-filter text-primary me-2"></i>Employee Parameters</h4>
+            <p class="text-muted small mb-4">Based on IBM HR Analytics Attrition Dataset</p>
+            <form method="post">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                <button type="submit" class="btn btn-primary w-100 mt-3">
+                    <i class="fas fa-bolt me-2"></i> Run Analysis
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        {% if prediction %}
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-center text-center animate-fade">
+            <div class="mb-4">
+                <i class="fas {% if risk_score > 0.5 %}fa-exclamation-triangle text-danger{% else %}fa-check-circle text-success{% endif %} fa-5x"></i>
+            </div>
+            <h2 class="mb-2">Analysis Result</h2>
+            <div class="display-4 fw-bold mb-3 {% if risk_score > 0.5 %}text-danger{% else %}text-success{% endif %}">
+                {{ prediction }}
+            </div>
+            <div class="h5 text-muted mb-4">
+                Confidence Score: {{ risk_score|floatformat:4 }}
+            </div>
+            <div class="p-3 rounded bg-dark border border-secondary text-start">
+                <h6>Recommendations:</h6>
+                <ul class="mb-0 small">
+                    {% if risk_score > 0.5 %}
+                        <li>Schedule a 1-on-1 meeting immediately.</li>
+                        <li>Review compensation and workload.</li>
+                        <li>Check for recent project stressors.</li>
+                    {% else %}
+                        <li>Continue current engagement strategies.</li>
+                        <li>Consider for future growth roles.</li>
+                        <li>Maintain work-life balance feedback loop.</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% else %}
+        <div class="glass-card p-4 h-100 d-flex flex-column justify-content-center text-center">
+            <div class="text-muted">
+                <i class="fas fa-robot fa-4x mb-4 opacity-50"></i>
+                <h5>Ready for Input</h5>
+                <p>Fill the form to calculate the resignation risk based on AI patterns.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

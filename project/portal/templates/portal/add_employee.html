@@ -1,0 +1,40 @@
+{% extends 'portal/base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Add New Employee{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center animate-fade">
+    <div class="col-lg-8">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">New Employee Profile</h4>
+                <a href="{% url 'employee_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">{% bootstrap_field form.first_name %}</div>
+                    <div class="col-md-6 mb-3">{% bootstrap_field form.last_name %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">{% bootstrap_field form.username %}</div>
+                    <div class="col-md-6 mb-3">{% bootstrap_field form.email %}</div>
+                </div>
+                <hr class="bg-secondary opacity-25 my-4">
+                <div class="row">
+                    <div class="col-md-6 mb-3">{% bootstrap_field form.employee_id %}</div>
+                    <div class="col-md-6 mb-3">{% bootstrap_field form.department %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">{% bootstrap_field form.job_role %}</div>
+                    <div class="col-md-6 mb-3">{% bootstrap_field form.salary_range %}</div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 mt-3">
+                    Confirm & Create <i class="fas fa-user-plus ms-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

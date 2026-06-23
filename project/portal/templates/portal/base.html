@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Portal | Resignation Risk Analyser</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <div class="sidebar">
+        <div class="mb-5 px-2">
+            <h3 class="text-white"><i class="fas fa-shield-alt text-primary me-2"></i>HR Guard</h3>
+        </div>
+        <nav>
+            <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="{% url 'predict_risk' %}" class="nav-link {% if request.resolver_match.url_name == 'predict_risk' %}active{% endif %}">
+                <i class="fas fa-brain"></i> Risk Analyser
+            </a>
+            <a href="{% url 'analytics' %}" class="nav-link {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
+                <i class="fas fa-chart-bar"></i> Power BI Dashboard
+            </a>
+            <a href="{% url 'employee_list' %}" class="nav-link {% if request.resolver_match.url_name == 'employee_list' %}active{% endif %}">
+                <i class="fas fa-users"></i> Employees
+            </a>
+            <div class="mt-auto pt-5">
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </nav>
+    </div>
+    <div class="main-content">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h2 mb-0">{% block title %}Dashboard{% endblock %}</h1>
+                <p class="text-muted">Welcome back, {{ user.username }}</p>
+            </div>
+            <div class="glass-card px-3 py-2">
+                <i class="fas fa-user-circle me-2"></i> HR Admin
+            </div>
+        </header>
+        {% block content %}{% endblock %}
+    </div>
+    {% else %}
+        {% block login %}{% endblock %}
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
